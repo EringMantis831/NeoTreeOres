@@ -1,0 +1,111 @@
+Minecraft Forge: Credits/Thank You
+
+Forge is a set of tools and modifications to the Minecraft base game code to assist 
+mod developers in creating new and exciting content. It has been in development for 
+several years now, but I would like to take this time thank a few people who have 
+helped it along it's way.
+
+First, the people who originally created the Forge projects way back in Minecraft 
+alpha. Eloraam of RedPower, and SpaceToad of Buildcraft, without their acceptiance 
+of me taking over the project, who knows what Minecraft modding would be today.
+
+Secondly, someone who has worked with me, and developed some of the core features
+that allow modding to he as functional, and as simple as it is, cpw. For developing
+FML, which stabelized the client and server modding ecosystem. As well as the base
+loading system that allows us to modify Minecraft's code as elegently as possible.
+
+Mezz, who has stepped up as the issue and pull request manager. Helping to keep me
+sane as well as guiding the community into creating better additions to Forge.
+
+Searge, Bspks, Fesh0r, ProfMobious, and all the rest over on the MCP team {of which 
+I am a part}. For creating some of the core tools needed to make Minecraft modding 
+both possible, and as stable as can be.
+  On that note, here is some specific information of the MCP data we use:
+    * Minecraft Coder Pack (MCP) *
+      Forge Mod Loader and Minecraft Forge have permission to distribute and automatically 
+      download components of MCP and distribute MCP data files. This permission is not 
+      transitive and others wishing to redistribute the Minecraft Forge source independently
+      should seek permission of MCP or remove the MCP data files and request their users 
+      to download MCP separately.
+      
+And lastly, the countless community members who have spent time submitting bug reports, 
+pull requests, and just helping out the community in general. Thank you.
+
+--LexManos
+
+=========================================================================
+
+This is Forge Mod Loader.
+
+You can find the source code at all times at https://github.com/MinecraftForge/MinecraftForge/tree/1.12.x/src/main/java/net/minecraftforge/fml
+
+This minecraft mod is a clean open source implementation of a mod loader for minecraft servers
+and minecraft clients.
+
+The code is authored by cpw.
+
+It began by partially implementing an API defined by the client side ModLoader, authored by Risugami.
+http://www.minecraftforum.net/topic/75440-
+This support has been dropped as of Minecraft release 1.7, as Risugami no longer maintains ModLoader.
+
+It also contains suggestions and hints and generous helpings of code from LexManos, author of MinecraftForge.
+http://www.minecraftforge.net/
+
+Additionally, it contains an implementation of topological sort based on that 
+published at http://keithschwarz.com/interesting/code/?dir=topological-sort
+
+It also contains code from the Maven project for performing versioned dependency
+resolution. http://maven.apache.org/
+
+It also contains a partial repackaging of the javaxdelta library from http://sourceforge.net/projects/javaxdelta/
+with credit to it's authors.
+
+Forge Mod Loader downloads components from the Minecraft Coder Pack
+(http://mcp.ocean-labs.de/index.php/Main_Page) with kind permission from the MCP team.
+
+=========================================================================
+
+Sakura mod（落叶机制）
+
+本模组的「落叶地毯」与「飘落树叶粒子」参考 / 移植自 Sakura 模组：
+
+  https://github.com/0999312/Sakura_mod
+  https://www.curseforge.com/minecraft/mc-mods/sakura
+  作者：0999312（mcmod.info 里列的是 Syameimaru Zheng, Bagu_chan）
+  许可：MIT License, Copyright (c) 2019 0999312
+
+MIT 条款全文见 LICENSES/MIT.txt。
+
+参考的具体行为：
+  * 树叶随机刻时在地面铺一层 1/8 高、无碰撞的落叶地毯；
+  * 破坏地毯掉落落叶物品，掉落量受时运影响；
+  * 树叶方块产生飘落的树叶粒子。
+
+本模组在这些基础上的改动：落叶地毯改用原版雪层的 Material.SNOW，
+以便流体流入时被冲走（而不是自毁）；粒子贴图直接复用该树树叶的贴图
+（getFXLayer() == 1 走方块图集），不需要额外准备粒子图集；
+树叶本身的腐烂仍走原版 check_decay / decayable + beginLeavesDecay，
+以便与其它模组兼容（与 Sakura 不同：Sakura 是自写的一套）。
+
+=========================================================================
+
+TreeOres（点子来源，**未取用代码**）
+
+矿树这个点子的来源是 TreeOres，作者 Dima Kevanishvili AKA Lessoner。
+该项目的 README 写明「You can not take any code from my project, but feel free to look
+at it and solve your problem」，LICENSE.md 也只有一行版权声明
+（Copyright [2014] [Dima Kevanishvili AKA Lessoner]）、没有授权任何使用权。
+
+所以本模组**没有取用它的任何代码**，只参考了「树上长矿物」这个玩法思路。树种名单与合成配比
+数据来自我们自己整理的数据表；方块与物品实现、方块模型、
+渲染方式、世界生成、CraftTweaker 接口、各模组联动均为独立完成。
+请后续维护者继续遵守这个界限：不要把 TreeOres 的代码拷进来。
+
+
+=========================================================================
+
+NeoTreeOres 自身
+
+本模组自身以 MIT License 发布，Copyright (c) 2026 EringMantis831，全文见根目录 LICENSE。
+LICENSES/ 目录下是第三方许可证原文：MIT.txt 对应上面 Sakura 的部分（Copyright (c) 2019 0999312），
+LGPL-2.1.txt 对应 Minecraft Forge / Forge Mod Loader（本模组只对其编译，不随包分发其代码）。

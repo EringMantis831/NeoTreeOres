@@ -1,0 +1,52 @@
+# 基于官方 MDK 模板 forge-1.12.2-14.23.5.2859-mdk.zip 的 .gitignore，
+# 并补充了本项目用到的规则（各分节里带说明的就是补充项）。
+
+# gradle
+build/
+.gradle/
+out/
+
+# idea
+.idea/
+*.ipr
+*.iws
+*.iml
+
+# eclipse
+bin/
+.settings/
+.metadata/
+.classpath
+.project
+*.launch
+eclipse
+
+# vscode
+.vscode/
+
+# Files from Forge MDK（模板自带的规则：MDK 解压出的 changelog）
+forge*changelog.txt
+
+# 开发运行时目录（runClient / runServer 生成）
+run/
+runs/
+
+# 日志与崩溃报告
+logs/
+crash-reports/
+hs_err_pid*
+replay_pid*
+
+# 本地依赖（如需手动放 jar）
+libs/
+
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# 构建/运行日志
+*.log
+
+# ZenScript 回归测试的编译产物（CtZenRegression 生成）
+generated/

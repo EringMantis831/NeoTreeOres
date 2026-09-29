@@ -1,0 +1,16 @@
+# 统一换行：仓库里和检出后都用 LF，不依赖每个人本机的 core.autocrlf 设置。
+# 只写 text=auto 的话，Windows 上 core.autocrlf=true 会让检出结果变成 CRLF，
+# 于是每次 git add 都刷一屏「LF will be replaced by CRLF」警告。
+* text=auto eol=lf
+
+# Shell / wrapper 必须保持 LF，否则在 Linux / macOS / WSL 下无法执行
+*.sh   text eol=lf
+gradlew text eol=lf
+
+# Windows 批处理必须 CRLF（写在通配规则之后，后者覆盖前者）
+*.bat  text eol=crlf
+
+# 二进制文件不做任何转换
+*.jar  binary
+*.png  binary
+*.lzma binary
