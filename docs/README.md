@@ -16,15 +16,6 @@ and reconfigured from CraftTweaker scripts.
 - Textures use a shared grayscale base plus tint: all 19 trees share 10 block models, and colours
   come from `IBlockColor` / `IItemColor` at runtime
 
-## Installation
-
-Drop `neotreeores-1.12.2-1.0.0.jar` into `mods/`. Every integration is a soft dependency, so the mod
-starts with or without them.
-
-The default recipe converts leaves into ore, and the ratio depends on the species (for example
-3 coal leaves to 1 coal, 5 iron leaves to 1 iron ingot). There is also `4 logs -> 3 wood` and
-`8 mineral blocks + any sapling -> that tree's sapling`.
-
 ## CraftTweaker
 
 Put scripts in the game directory's `scripts/` folder (next to `config/`) and restart:
@@ -54,83 +45,6 @@ Two things to keep in mind:
    `dust` / `nugget` / `block` / `plate` / `gear` / `raw` + the ore name, then the bare name). Those
    entries are registered by other mods, so which mineral mods you have installed decides which
    trees become active.
-
-## Configuration
-
-`config/neotreeores.cfg` holds one general group (fallen-leaves chance, particle toggle, whether a
-player must be nearby, and so on) plus one group per tree (the `enabled` tri-state, four drop
-chances, two colours).
-
-`enabled` accepts `auto` (default, decided by ore dictionary), `true` or `false`. Setting it to
-`false` stops a **script-added** tree from being registered; the 19 built-in trees are always
-registered so existing saves keep their ID mappings.
-
-## Building from source
-
-You need **JDK 8** (ForgeGradle 3 with Gradle 4.9 does not work on newer versions). Point `JAVA_HOME`
-at your JDK 8 and use the Gradle wrapper:
-
-```bash
-./gradlew build          # the first run downloads about 200MB
-./gradlew runClient      # development client
-```
-
-Before building, drop `jei_1.12.2-4.22.0.1035.jar` into the `libs/` folder. The JEI plugin compiles
-against that API, and the version is not on JEI's public maven (which stops at 4.16.1.302), so the jar
-is not distributed with this repository.
-
-Output lands in `build/libs/neotreeores-1.12.2-1.0.0-dev2.jar`. Note that `org.gradle.java.home` in
-`gradle.properties` is a machine-specific path and has to be changed elsewhere. The first build needs
-network access to download Minecraft, MCP and the Forge userdev jars and usually takes 5 to 20
-minutes.
-
-### Regression tests
-
-Headless, no save directory is created:
-
-```bash
-gradlew verifyCtControls verifyCtRegistries
-# compiles and runs a script with CraftTweaker's own compiler; needs two jars from your instance
-gradlew verifyCtZen -PctRegressionScript=<script path> -PctCompilerJar=<CraftTweaker jar>
-```
-
-## Repository layout
-
-```
-├── LICENSE                                  # MIT License (this mod)
-├── LICENSES/                                # MIT.txt (Sakura), LGPL-2.1.txt (Forge)
-├── docs/                                    # README.md (English) and README_CN.md (Chinese)
-├── src/main/java/cn/mcmod/neotreeores/
-│   ├── block/ client/ item/ recipe/ util/   # blocks, client rendering, items, recipes
-│   ├── tree/                                # tree definitions, registry, gating, generators, CrT parsing
-│   ├── world/gen/                           # oak / big oak / spruce / mega pine-spruce
-│   └── integration/                         # BonsaiTrees / Mekanism / Thermal / JEI / CrT
-├── src/main/resources/assets/neotreeores/   # models, blockstates, lang, textures
-├── src/test/                                # the headless regression tests above
-└── examples/example.zs                      # CraftTweaker example
-```
-
-## Troubleshooting
-
-**Build hangs while downloading or times out?** It needs `maven.minecraftforge.net`,
-`libraries.minecraft.net`, `piston-data.mojang.com` and `services.gradle.org`. Behind a proxy, set
-`GRADLE_OPTS` in your shell.
-
-**`Could not determine java version from '26.x'`?** Gradle was started with a newer JDK. Point
-`JAVA_HOME` at JDK 8.
-
-**`runClient` crashes with an NPE in `NetworkRegistry.newChannel`?** That comes from a `Side.BUKKIT`
-constant injected by ForgeGradle's merge tool; the fix is built into `build.gradle`, and the
-reasoning is in the comment block at the top of that file. If it still happens, an old merged jar is
-still cached — delete these two directories and rebuild:
-
-```
-%USERPROFILE%\.gradle\caches\forge_gradle\mcp_repo
-%USERPROFILE%\.gradle\caches\forge_gradle\minecraft_user_repo\net\minecraftforge\forge\1.12.2-14.23.5.2859*
-```
-
-**Why does the jar name contain `dev2`?** A leftover build artifact name. This is functionally
-1.0.0; the file used for releases is `neotreeores-1.12.2-1.0.0.jar`.
 
 ## License
 
