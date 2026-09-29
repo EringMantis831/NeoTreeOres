@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "check_decay=false,decayable=false": {
+      "model": "neotreeores:dyn_leaves_oak"
+    },
+    "check_decay=false,decayable=true": {
+      "model": "neotreeores:dyn_leaves_oak"
+    },
+    "check_decay=true,decayable=false": {
+      "model": "neotreeores:dyn_leaves_oak"
+    },
+    "check_decay=true,decayable=true": {
+      "model": "neotreeores:dyn_leaves_oak"
+    }
+  }
+}

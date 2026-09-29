@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "neotreeores:blocks/base_sapling_oak",
+    "layer1": "neotreeores:blocks/sapling_oak_overlay"
+  }
+}

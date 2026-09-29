@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "neotreeores:dyn_wood_spruce"
+    },
+    "axis=y": {
+      "model": "neotreeores:dyn_wood_spruce"
+    },
+    "axis=z": {
+      "model": "neotreeores:dyn_wood_spruce"
+    },
+    "axis=none": {
+      "model": "neotreeores:dyn_wood_spruce"
+    }
+  }
+}

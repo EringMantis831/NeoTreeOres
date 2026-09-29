@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "neotreeores:dyn_log_oak",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
+      "model": "neotreeores:dyn_log_oak"
+    },
+    "axis=z": {
+      "model": "neotreeores:dyn_log_oak",
+      "x": 90
+    },
+    "axis=none": {
+      "model": "neotreeores:dyn_log_oak"
+    }
+  }
+}

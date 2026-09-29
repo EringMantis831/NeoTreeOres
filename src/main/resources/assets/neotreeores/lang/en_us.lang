@@ -1,0 +1,135 @@
+# NeoTreeOres lang file (en_us) - generated
+itemGroup.neotreeores=Neo Tree Ores
+
+tile.neotreeores.coal_log.name=Charcoal Log
+tile.neotreeores.coal_wood.name=Charcoal Wood
+tile.neotreeores.coal_leaves.name=Charcoal Leaves
+tile.neotreeores.coal_sapling.name=Charcoal Sapling
+tile.neotreeores.coal_fallen_leaves.name=Charcoal Fallen Leaves
+item.neotreeores.coal_broadleaf.name=Charcoal Broadleaf
+
+tile.neotreeores.iron_log.name=Cycas Log
+tile.neotreeores.iron_wood.name=Cycas Wood
+tile.neotreeores.iron_leaves.name=Cycas Leaves
+tile.neotreeores.iron_sapling.name=Cycas Sapling
+tile.neotreeores.iron_fallen_leaves.name=Cycas Fallen Leaves
+item.neotreeores.iron_broadleaf.name=Cycas Broadleaf
+
+tile.neotreeores.gold_log.name=Waubeech Log
+tile.neotreeores.gold_wood.name=Waubeech Wood
+tile.neotreeores.gold_leaves.name=Waubeech Leaves
+tile.neotreeores.gold_sapling.name=Waubeech Sapling
+tile.neotreeores.gold_fallen_leaves.name=Waubeech Fallen Leaves
+item.neotreeores.gold_broadleaf.name=Waubeech Broadleaf
+
+tile.neotreeores.diamond_log.name=Crystallized Log
+tile.neotreeores.diamond_wood.name=Crystallized Wood
+tile.neotreeores.diamond_leaves.name=Crystallized Leaves
+tile.neotreeores.diamond_sapling.name=Crystallized Sapling
+tile.neotreeores.diamond_fallen_leaves.name=Crystallized Fallen Leaves
+item.neotreeores.diamond_needleleaf.name=Crystallized Needleleaf
+
+tile.neotreeores.emerald_log.name=Canutillos Log
+tile.neotreeores.emerald_wood.name=Canutillos Wood
+tile.neotreeores.emerald_leaves.name=Canutillos Leaves
+tile.neotreeores.emerald_sapling.name=Canutillos Sapling
+tile.neotreeores.emerald_fallen_leaves.name=Canutillos Fallen Leaves
+item.neotreeores.emerald_needleleaf.name=Canutillos Needleleaf
+
+tile.neotreeores.redstone_log.name=Conductor Log
+tile.neotreeores.redstone_wood.name=Conductor Wood
+tile.neotreeores.redstone_leaves.name=Conductor Leaves
+tile.neotreeores.redstone_sapling.name=Conductor Sapling
+tile.neotreeores.redstone_fallen_leaves.name=Conductor Fallen Leaves
+item.neotreeores.redstone_needleleaf.name=Conductor Needleleaf
+
+tile.neotreeores.lapis_log.name=Lazuli Log
+tile.neotreeores.lapis_wood.name=Lazuli Wood
+tile.neotreeores.lapis_leaves.name=Lazuli Leaves
+tile.neotreeores.lapis_sapling.name=Lazuli Sapling
+tile.neotreeores.lapis_fallen_leaves.name=Lazuli Fallen Leaves
+item.neotreeores.lapis_needleleaf.name=Lazuli Needleleaf
+
+tile.neotreeores.copper_log.name=Violet Log
+tile.neotreeores.copper_wood.name=Violet Wood
+tile.neotreeores.copper_leaves.name=Violet Leaves
+tile.neotreeores.copper_sapling.name=Violet Sapling
+tile.neotreeores.copper_fallen_leaves.name=Violet Fallen Leaves
+item.neotreeores.copper_broadleaf.name=Violet Broadleaf
+
+tile.neotreeores.silver_log.name=Silver Log
+tile.neotreeores.silver_wood.name=Silver Wood
+tile.neotreeores.silver_leaves.name=Silver Leaves
+tile.neotreeores.silver_sapling.name=Silver Sapling
+tile.neotreeores.silver_fallen_leaves.name=Silver Fallen Leaves
+item.neotreeores.silver_broadleaf.name=Silver Broadleaf
+
+tile.neotreeores.lead_log.name=Dense Log
+tile.neotreeores.lead_wood.name=Dense Wood
+tile.neotreeores.lead_leaves.name=Dense Leaves
+tile.neotreeores.lead_sapling.name=Dense Sapling
+tile.neotreeores.lead_fallen_leaves.name=Dense Fallen Leaves
+item.neotreeores.lead_broadleaf.name=Dense Broadleaf
+
+tile.neotreeores.tin_log.name=Tin Log
+tile.neotreeores.tin_wood.name=Tin Wood
+tile.neotreeores.tin_leaves.name=Tin Leaves
+tile.neotreeores.tin_sapling.name=Tin Sapling
+tile.neotreeores.tin_fallen_leaves.name=Tin Fallen Leaves
+item.neotreeores.tin_broadleaf.name=Tin Broadleaf
+
+tile.neotreeores.ruby_log.name=Ruby Log
+tile.neotreeores.ruby_wood.name=Ruby Wood
+tile.neotreeores.ruby_leaves.name=Ruby Leaves
+tile.neotreeores.ruby_sapling.name=Ruby Sapling
+tile.neotreeores.ruby_fallen_leaves.name=Ruby Fallen Leaves
+item.neotreeores.ruby_needleleaf.name=Ruby Needleleaf
+
+tile.neotreeores.sapphire_log.name=Sapphire Log
+tile.neotreeores.sapphire_wood.name=Sapphire Wood
+tile.neotreeores.sapphire_leaves.name=Sapphire Leaves
+tile.neotreeores.sapphire_sapling.name=Sapphire Sapling
+tile.neotreeores.sapphire_fallen_leaves.name=Sapphire Fallen Leaves
+item.neotreeores.sapphire_needleleaf.name=Sapphire Needleleaf
+
+tile.neotreeores.platinum_log.name=Platinum Log
+tile.neotreeores.platinum_wood.name=Platinum Wood
+tile.neotreeores.platinum_leaves.name=Platinum Leaves
+tile.neotreeores.platinum_sapling.name=Platinum Sapling
+tile.neotreeores.platinum_fallen_leaves.name=Platinum Fallen Leaves
+item.neotreeores.platinum_needleleaf.name=Platinum Needleleaf
+
+tile.neotreeores.nickel_log.name=Nickel Log
+tile.neotreeores.nickel_wood.name=Nickel Wood
+tile.neotreeores.nickel_leaves.name=Nickel Leaves
+tile.neotreeores.nickel_sapling.name=Nickel Sapling
+tile.neotreeores.nickel_fallen_leaves.name=Nickel Fallen Leaves
+item.neotreeores.nickel_needleleaf.name=Nickel Needleleaf
+
+tile.neotreeores.iridium_log.name=Luminant Log
+tile.neotreeores.iridium_wood.name=Luminant Wood
+tile.neotreeores.iridium_leaves.name=Luminant Leaves
+tile.neotreeores.iridium_sapling.name=Luminant Sapling
+tile.neotreeores.iridium_fallen_leaves.name=Luminant Fallen Leaves
+item.neotreeores.iridium_needleleaf.name=Luminant Needleleaf
+
+tile.neotreeores.titanium_log.name=Rutile Log
+tile.neotreeores.titanium_wood.name=Rutile Wood
+tile.neotreeores.titanium_leaves.name=Rutile Leaves
+tile.neotreeores.titanium_sapling.name=Rutile Sapling
+tile.neotreeores.titanium_fallen_leaves.name=Rutile Fallen Leaves
+item.neotreeores.titanium_needleleaf.name=Rutile Needleleaf
+
+tile.neotreeores.uranium_log.name=Radiative Log
+tile.neotreeores.uranium_wood.name=Radiative Wood
+tile.neotreeores.uranium_leaves.name=Radiative Leaves
+tile.neotreeores.uranium_sapling.name=Radiative Sapling
+tile.neotreeores.uranium_fallen_leaves.name=Radiative Fallen Leaves
+item.neotreeores.uranium_broadleaf.name=Radiative Broadleaf
+
+tile.neotreeores.neon_log.name=Neon Log
+tile.neotreeores.neon_wood.name=Neon Wood
+tile.neotreeores.neon_leaves.name=Neon Leaves
+tile.neotreeores.neon_sapling.name=Neon Sapling
+tile.neotreeores.neon_fallen_leaves.name=Neon Fallen Leaves
+item.neotreeores.neon_needleleaf.name=Neon Needleleaf
