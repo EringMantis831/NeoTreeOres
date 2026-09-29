@@ -1,0 +1,304 @@
+buildscript {
+    repositories {
+        // jcenter() 已于 2021 年废弃，官方 1.12.2 MDK 也已改用下面这两个仓库
+        maven { url = 'https://maven.minecraftforge.net/' }
+        mavenCentral()
+    }
+    dependencies {
+        // 固定版本以保证可复现构建（官方 MDK 写的是 3.+ 动态版本）
+        classpath 'net.minecraftforge.gradle:ForgeGradle:3.0.197'
+    }
+}
+
+apply plugin: 'net.minecraftforge.gradle'
+// Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
+
+// ----------------------------------------------------------------------------
+// 额外仓库：CraftTweaker（BlameJared 官方 maven）
+// 只为“软依赖”用：编译期拿到 CT 的注解（@ZenClass/@ZenMethod/@ZenRegister），
+// 运行期没装 CT 也不会报错（注解在类加载时才解析，缺了也不影响）。
+// ----------------------------------------------------------------------------
+repositories {
+    maven { url = 'https://maven.blamejared.com' }
+    maven { url = 'https://dvs1.progwml6.com/files/maven' }
+}
+apply plugin: 'eclipse'
+
+// ============================================================================
+// 单一开发包 + 可选 CUTOUT_test 渲染实验包
+// 用法：gradlew build
+//       gradlew build -PcutoutTest=true
+// ============================================================================
+def cutoutTest = (project.findProperty('cutoutTest') ?: 'false').toString().toBoolean()
+ext.cutoutTest = cutoutTest
+
+def renderVariantSrcDir = new File(buildDir, 'generated/render-variant-src')
+task generateRenderVariantSource {
+    inputs.property 'cutoutTest', cutoutTest
+    outputs.dir renderVariantSrcDir
+    doLast {
+        File f = new File(renderVariantSrcDir, 'cn/mcmod/neotreeores/RenderBuildConfig.java')
+        f.parentFile.mkdirs()
+        f.setText("""package cn.mcmod.neotreeores;
+public final class RenderBuildConfig {
+    public static final boolean CUTOUT_TEST = ${cutoutTest};
+    private RenderBuildConfig() {}
+}
+""", 'UTF-8')
+    }
+}
+sourceSets.main.java.srcDir renderVariantSrcDir
+compileJava.dependsOn generateRenderVariantSource
+
+// ============================================================================
+//  元数据：全部来自 gradle.properties（唯一配置源）
+// ============================================================================
+version = mod_version
+group = mod_group // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = mod_name
+
+jar {
+    archiveName = cutoutTest ? 'neotreeores-1.12.2-1.0.0-dev2.jar'
+            : 'neotreeores-1.12.2-1.0.0-dev2.jar'
+}
+
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+
+// 统一 UTF-8，避免中文注释/语言文件在 Windows(GBK) 下乱码
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+// ============================================================================
+//  ★ 1.12.2 开发环境必需的兼容性修正（不要删除！）
+//
+//  症状：runClient 启动时 FML 崩溃
+//        java.lang.NullPointerException
+//          at NetworkRegistry.newChannel(NetworkRegistry.java:207)
+//          at FMLNetworkHandler.registerChannel(FMLNetworkHandler.java:185)
+//          at FMLContainer.modConstruction(FMLContainer.java:92)
+//
+//  原因：Forge 1.12.2-14.23.5.2854+ 的 mcp_config 声明了
+//        net.minecraftforge:mergetool:1.0.13:forge（见其 config.json 的 libraries.joined）。
+//        MergeTool 1.0.x / 0.2.3.2 内置的 net.minecraftforge.fml.relauncher.Side 里多了一个
+//        BUKKIT 常量，它会被注入开发用 Minecraft/Forge jar，导致
+//        Side.values() 返回 3 个值，而 NetworkRegistry 只为 CLIENT/SERVER 建了通道 Map，
+//        于是 channels.get(Side.BUKKIT) == null -> NPE。
+//
+//  修正：强制使用未包含 Side.BUKKIT 的 MergeTool 0.2.3.3，并在编译/运行 classpath 最前面
+//        放入该版本的 Side / SideOnly（见下方 sideFix 部分），盖掉被注入的脏类。
+//        0.2.3.3 / 0.2.3.5 的 Side 只有 CLIENT/SERVER；0.2.3.2 与 1.0.x 都带 BUKKIT。
+//
+//  注意：改动本段后建议清理一次缓存再构建（删掉下面这两个目录）：
+//        %USERPROFILE%\.gradle\caches\forge_gradle\mcp_repo
+//        %USERPROFILE%\.gradle\caches\forge_gradle\minecraft_user_repo\net\minecraftforge\forge\1.12.2-14.23.5.2859*
+// ============================================================================
+configurations {
+    // 专用的“干净 Side”来源，不参与正常依赖（不解析传递依赖，只取那一个 jar）
+    sideFix {
+        transitive = false
+    }
+
+    // 让 FG 的 libraries.joined(mergetool:1.0.13:forge) 也解析到干净版本
+    all {
+        resolutionStrategy {
+            force 'net.minecraftforge:mergetool:0.2.3.3'
+        }
+    }
+}
+
+dependencies {
+    sideFix 'net.minecraftforge:mergetool:0.2.3.3:forge'
+}
+
+// 从干净的 MergeTool API 里抽出 Side / SideOnly，放到独立的 class 目录
+ ext.sideFixDir = new File(buildDir, 'side-fix-classes')
+
+task extractSideFix {
+    def sideFixJar = configurations.sideFix
+    inputs.files sideFixJar
+    outputs.dir project.ext.sideFixDir
+    doLast {
+        delete project.ext.sideFixDir
+        copy {
+            from zipTree(sideFixJar.singleFile)
+            include 'net/minecraftforge/fml/relauncher/Side.class'
+            include 'net/minecraftforge/fml/relauncher/SideOnly.class'
+            into project.ext.sideFixDir
+        }
+    }
+}
+
+// 放到 classpath 最前面：开发时优先加载干净版本。
+// 注意：它不属于 sourceSets.main.output，因此不会被打进最终 mod jar。
+sourceSets.main.compileClasspath = files(extractSideFix.outputs.files) + sourceSets.main.compileClasspath
+sourceSets.main.runtimeClasspath = files(extractSideFix.outputs.files) + sourceSets.main.runtimeClasspath
+
+minecraft {
+    // The mappings can be changed at any time, and must be in the following format.
+    // snapshot_YYYYMMDD   Snapshot are built nightly.
+    // stable_#            Stables are built at the discretion of the MCP team.
+    // Use non-default mappings at your own risk. they may not always work.
+    // Simply re-run your setup task after changing the mappings to update your workspace.
+    // 注: 1.12.2 走的是 userdev3(legacy) 流程，实际映射由 userdev3 的 config.json 决定，
+    //     这里保持官方 MDK 默认值即可。
+    mappings channel: mappings_channel, version: mappings_version
+
+    // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+
+    // Default run configurations.
+    // These can be tweaked, removed, or duplicated as needed.
+    runs {
+        client {
+            workingDirectory project.file('run')
+
+            // Recommended logging data for a userdev environment
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+        }
+
+        server {
+
+            // Recommended logging data for a userdev environment
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+        }
+    }
+}
+
+dependencies {
+    // Specify the version of Minecraft to use, If this is any group other then 'net.minecraft' it is assumed
+    // that the dep is a ForgeGradle 'patcher' dependency. And it's patches will be applied.
+    // The userdev artifact is a special name and will get all sorts of transformations applied to it.
+    minecraft "net.minecraftforge:forge:${forge_version}"
+
+    // ------------------------------------------------------------------
+    // 后续移植 TreeOres 时按需启用（ForgeGradle 3 语法）：
+    //
+    // repositories {
+    //     maven { url = 'https://maven.blamejared.com' }        // CraftTweaker / JEI
+    //     maven { url = 'https://dvs1.progwml6.com/files/maven' } // JEI
+    //     maven { url = 'https://www.cursemaven.com' }          // CurseForge
+    // }
+    //
+    // JEI 4.22.0.1035 —— 只在编译期需要 API，不会打进发布包。
+    // 请把 jei_1.12.2-4.22.0.1035.jar 放到本仓库的 libs/ 目录下；libs/ 已在 .gitignore 中，
+    // 这个第三方 jar 不随仓库分发。（JEI 官方 maven 只到 4.16.1.302，托管不到这个版本，
+    // 所以只能自己提供。）
+    def jeiJar = file('libs/jei_1.12.2-4.22.0.1035.jar')
+    if (!jeiJar.isFile()) {
+        throw new GradleException("Missing JEI jar: ${jeiJar}\n" +
+                "Download jei_1.12.2-4.22.0.1035.jar and place it in the libs/ folder of this repository.")
+    }
+    compileOnly files(jeiJar)
+    // ------------------------------------------------------------------
+    // CraftTweaker（ZenScript 联动）：软依赖
+    //   compileOnly  编译期拿注解（不打进包里）
+    //   runtimeOnly  开发客户端里真的加载 CT，便于用 run/scripts/*.zs 端到端验证
+    // ------------------------------------------------------------------
+    compileOnly fg.deobf('CraftTweaker2:CraftTweaker2-MC1120-Main:1.12-4.1.20.716')
+    compileOnly fg.deobf('CraftTweaker2:CraftTweaker2-API:4.1.20.716')
+    compileOnly fg.deobf('CraftTweaker2:ZenScript:4.1.20.716')
+    // 注意：Main jar 放在 run/mods/ 里（FML 才会应用它的 access transformer），
+    // 所以这里只用 Gradle 提供它依赖的 API 与 ZenScript（非 mod 库，不需要 AT）
+    runtimeOnly fg.deobf('CraftTweaker2:CraftTweaker2-API:4.1.20.716')
+    runtimeOnly 'CraftTweaker2:ZenScript:4.1.20.716'
+}
+
+// 把 gradle.properties 里的元数据注入 mcmod.info
+processResources {
+    exclude '**/master/**'
+    // this will ensure that this task is redone when the versions change.
+    inputs.property 'version', project.version
+    inputs.property 'mcversion', project.mc_version
+    inputs.property 'description', project.mod_description
+
+    // 现在所有颜色都走原版 tint（IBlockColor/IItemColor），基底贴图必须随包发布，
+    // 两个变体的内容因此完全一致 —— 这里不再按变体排除任何资源。
+
+
+    // mcmod.info 是 UTF-8；显式指定过滤字符集，避免 Windows 平台默认编码干扰
+    filteringCharset = 'UTF-8'
+
+    // replace stuff in mcmod.info, nothing else
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+
+        // replace version and mcversion
+        expand(
+                'version'    : project.version,
+                'mcversion'  : project.mc_version,
+                'build_time' : new Date().format("yyyy-MM-dd HH:mm"),
+                'mod_id'     : project.mod_id,
+                'mod_name'   : project.mod_name,
+                'mod_desc_json': groovy.json.JsonOutput.toJson(project.mod_description),
+                'mod_authors': project.mod_authors,
+                'mod_credits': project.mod_credits,
+                'mod_url'    : project.mod_url,
+                'mod_logo'   : project.mod_logo_file,
+                'forge_min'  : project.forge_min_version
+        )
+    }
+
+    // copy everything else except the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
+
+// Example for how to get properties into the manifest for reading by the runtime..
+jar {
+    archiveName = cutoutTest ? 'neotreeores-1.12.2-1.0.0-dev2.jar'
+            : 'neotreeores-1.12.2-1.0.0-dev2.jar'
+    manifest {
+        attributes([
+                "Specification-Title"     : project.mod_id,
+                "Specification-Vendor"    : project.mod_group,
+                "Specification-Version"   : "1", // We are version 1 of ourselves
+                "Implementation-Title"    : project.name,
+                "Implementation-Version"  : "${version}",
+                "Implementation-Vendor"   : project.mod_group,
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+}
+
+// Headless CrT regression: no client window and no save-directory changes.
+sourceSets.test.compileClasspath += sourceSets.main.compileClasspath
+task verifyCtControls(type: JavaExec) {
+    dependsOn testClasses, extractSideFix
+    classpath = sourceSets.test.runtimeClasspath
+    main = 'cn.mcmod.neotreeores.tree.CtControlsRegression'
+    if (project.hasProperty('ctRegressionScript')) {
+        args project.property('ctRegressionScript')
+    }
+}
+
+task verifyCtRegistries(type: JavaExec) {
+    dependsOn testClasses, extractSideFix
+    classpath = sourceSets.test.runtimeClasspath
+    main = 'cn.mcmod.neotreeores.tree.CtRegistryRegression'
+    if (project.hasProperty('ctRegressionScript')) args project.property('ctRegressionScript')
+}
+
+task verifyCtZen(type: JavaExec) {
+    dependsOn testClasses, extractSideFix
+    classpath = sourceSets.test.runtimeClasspath
+    // Resolve after ForgeGradle has installed its mapped dependency repository.
+    doFirst {
+        if (project.hasProperty('ctCompilerJar')) {
+            classpath = files(sourceSets.test.runtimeClasspath.files.findAll {
+                !it.name.startsWith('CraftTweaker2-') && !it.name.startsWith('ZenScript-')
+            }) + files(project.property('ctCompilerJar'))
+        }
+    }
+    main = 'cn.mcmod.neotreeores.tree.CtZenRegression'
+    if (project.hasProperty('ctRegressionScript')) args project.property('ctRegressionScript')
+}
+
+// This is the preferred method to reobfuscate your jar file
+jar.finalizedBy('reobfJar')
